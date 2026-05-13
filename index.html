@@ -56,28 +56,60 @@
   .progress-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
   .done-msg { text-align: center; margin-top: 10px; color: #2a9d8f; font-size: 15px; font-weight: bold; }
 
-  /* Exercise card */
-  .ex-block { margin-bottom: 12px; }
-  .ex-card {
+  /* Table header */
+  .table-header {
+    display: grid;
+    grid-template-columns: 1fr 90px 80px;
+    padding: 8px 12px;
+    background: #1a1a2e;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid #2a2a3e;
+    font-size: 11px;
+    color: #e63946;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 1px;
+  }
+
+  /* Exercise row */
+  .ex-row {
+    display: grid;
+    grid-template-columns: 1fr 90px 80px;
+    align-items: center;
+    padding: 10px 12px;
     background: #1a1a2e;
     border: 1px solid #2a2a3e;
-    border-radius: 12px;
-    padding: 14px 16px 12px;
+    border-top: none;
     transition: all 0.3s;
   }
-  .ex-card.done { background: rgba(42,157,143,0.08); border-color: #2a9d8f; }
-  .ex-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
-  .ex-name { font-size: 14px; font-weight: bold; }
-  .ex-name.done { color: #2a9d8f; }
-  .ex-repos-badge { font-size: 15px; font-weight: bold; color: #e63946; text-align: right; line-height: 1.2; flex-shrink: 0; margin-left: 10px; }
-  .ex-reps { font-size: 12px; color: #aaa; margin-top: 4px; }
+  .ex-row:last-child { border-radius: 0 0 8px 8px; margin-bottom: 0; }
+  .ex-row.done { background: rgba(42,157,143,0.08); border-color: #2a2a3e; }
+  .ex-row:nth-child(even) { background: #161624; }
+  .ex-row.done:nth-child(even) { background: rgba(42,157,143,0.05); }
 
-  .series-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .ex-name { font-size: 13px; padding-right: 8px; }
+  .ex-name.done { color: #2a9d8f; }
+  .ex-reps { font-size: 12px; color: #aaa; text-align: center; }
+  .ex-repos { font-size: 12px; color: #aaa; text-align: center; }
+
+  /* Serie buttons below each row */
+  .ex-block { margin-bottom: 2px; }
+  .series-btns {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    padding: 8px 12px 10px;
+    background: #12121e;
+    border: 1px solid #2a2a3e;
+    border-top: none;
+  }
+  .ex-block:last-child .series-btns { border-radius: 0 0 8px 8px; margin-bottom: 0; }
+
   .serie-btn {
-    width: 44px; height: 44px; border-radius: 10px;
+    width: 40px; height: 40px; border-radius: 8px;
     font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 13px;
   }
-  .serie-btn.checked { font-size: 18px; background: #2a9d8f; color: white; border: 2px solid #2a9d8f; }
+  .serie-btn.checked { font-size: 16px; background: #2a9d8f; color: white; border: 2px solid #2a9d8f; }
+
+  .table-wrap { margin-bottom: 20px; }
   .hidden { display: none; }
 </style>
 </head>
@@ -248,30 +280,28 @@ function renderExercices(prog, si) {
   show("view-exercices"); updateProgress();
   const list=document.getElementById("ex-list"); list.innerHTML="";
 
-  // No table header needed
+  // Table header
+  const header=document.createElement("div"); header.className="table-header";
+  header.innerHTML=`<span>Exercice</span><span style="text-align:center">Séries</span><span style="text-align:center">Repos</span>`;
+  list.appendChild(header);
+
   seance.exercises.forEach((ex,ei)=>{
     const checked=getChecked(prog,si,ei);
     while(checked.length<ex.series) checked.push(false);
     const allDone=checked.slice(0,ex.series).every(Boolean);
 
     const block=document.createElement("div"); block.className="ex-block";
-    const card=document.createElement("div"); card.className="ex-card"+(allDone?" done":"");
 
-    // Repos label split into 2 lines like image
-    const reposParts=ex.repos.split(" ");
-    const reposHtml=reposParts.join("<br>");
+    // Row
+    const row=document.createElement("div"); row.className="ex-row"+(allDone?" done":"");
+    row.innerHTML=`
+      <div class="ex-name ${allDone?"done":""}">${allDone?"✓ ":""}${ex.name}</div>
+      <div class="ex-reps">${ex.reps}</div>
+      <div class="ex-repos">${ex.repos}</div>`;
+    block.appendChild(row);
 
-    card.innerHTML=`
-      <div class="ex-card-header">
-        <div>
-          <div class="ex-name ${allDone?"done":""}">${allDone?"✓ ":""}${ex.name}</div>
-          <div class="ex-reps">${ex.reps}</div>
-        </div>
-        <div class="ex-repos-badge">${reposHtml}<br><span style="font-size:12px;color:#e63946">repos</span></div>
-      </div>
-      <div class="series-btns"></div>`;
-
-    const btnsDiv=card.querySelector(".series-btns");
+    // Serie buttons
+    const btnsDiv=document.createElement("div"); btnsDiv.className="series-btns";
     checked.slice(0,ex.series).forEach((d,sIdx)=>{
       const b=document.createElement("button"); b.className="serie-btn"+(d?" checked":"");
       b.style.border=`2px solid ${d?"#2a9d8f":seance.color}`;
@@ -281,7 +311,7 @@ function renderExercices(prog, si) {
       b.onclick=()=>toggleSerie(ei,sIdx);
       btnsDiv.appendChild(b);
     });
-    block.appendChild(card);
+    block.appendChild(btnsDiv);
     list.appendChild(block);
   });
 }
