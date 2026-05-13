@@ -1,39 +1,28 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
- <link rel="manifest" href="/manifest.json">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
- 
- <meta name="mobile-web-app-capable" content="yes">
- 
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Tracker">
+<link rel="manifest" href="/manifest.json">
 <title>Tracker Séances</title>
- 
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: #0f0f13;
-    color: #f0ece4;
-    font-family: Georgia, serif;
-    min-height: 100vh;
-    padding-bottom: 60px;
-  }
+  body { background: #0f0f13; color: #f0ece4; font-family: Georgia, serif; min-height: 100vh; padding-bottom: 60px; }
   header {
     background: linear-gradient(135deg, #1a1a2e, #16213e);
-    padding: 28px 20px 18px;
+    padding: 24px 20px 16px;
     border-bottom: 2px solid #e63946;
     text-align: center;
   }
   .label { font-size: 11px; letter-spacing: 4px; color: #e63946; text-transform: uppercase; margin-bottom: 6px; }
-  h1 { font-size: 22px; letter-spacing: 1px; }
+  h1 { font-size: 20px; letter-spacing: 1px; }
   .nav-btns { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
   .btn { border: none; border-radius: 8px; padding: 7px 14px; font-size: 12px; cursor: pointer; font-family: Georgia, serif; }
   .btn-back { background: #333; color: #f0ece4; }
   .btn-reset { background: #e63946; color: white; }
-
   main { max-width: 480px; margin: 0 auto; padding: 20px 16px 0; }
   .subtitle { color: #aaa; font-size: 13px; margin-bottom: 16px; text-align: center; }
 
@@ -43,8 +32,7 @@
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     border: 1px solid #333; border-radius: 12px;
     color: #f0ece4; font-size: 18px; font-family: Georgia, serif;
-    padding: 18px 20px; cursor: pointer; text-align: left;
-    letter-spacing: 1px;
+    padding: 18px 20px; cursor: pointer; text-align: left; letter-spacing: 1px;
   }
   .prog-arrow { color: #e63946; margin-right: 10px; }
   .prog-count { float: right; font-size: 12px; color: #777; margin-top: 4px; }
@@ -58,63 +46,59 @@
     padding: 16px 18px; cursor: pointer; text-align: left; border: 1px solid #333;
   }
   .seance-header { display: flex; justify-content: space-between; align-items: center; }
-  .seance-pct { font-size: 12px; }
   .mini-bar { margin-top: 8px; height: 4px; background: #333; border-radius: 2px; }
   .mini-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
 
   /* Progress */
-  .progress-wrap { margin-bottom: 20px; }
+  .progress-wrap { margin-bottom: 16px; }
   .progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; margin-bottom: 6px; }
   .progress-bar { height: 6px; background: #333; border-radius: 3px; }
   .progress-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
-  .done-msg { text-align: center; margin-top: 12px; color: #2a9d8f; font-size: 15px; font-weight: bold; }
+  .done-msg { text-align: center; margin-top: 10px; color: #2a9d8f; font-size: 15px; font-weight: bold; }
 
-  /* Exercise cards */
+  /* Exercise card */
+  .ex-block { margin-bottom: 12px; }
   .ex-card {
-    background: #1a1a2e; border: 1px solid #2a2a3e;
-    border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+    background: #1a1a2e;
+    border: 1px solid #2a2a3e;
+    border-radius: 12px;
+    padding: 14px 16px 12px;
     transition: all 0.3s;
   }
   .ex-card.done { background: rgba(42,157,143,0.08); border-color: #2a9d8f; }
+  .ex-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
   .ex-name { font-size: 14px; font-weight: bold; }
   .ex-name.done { color: #2a9d8f; }
-  .ex-meta { font-size: 11px; color: #888; margin-top: 2px; }
+  .ex-repos-badge { font-size: 15px; font-weight: bold; color: #e63946; text-align: right; line-height: 1.2; flex-shrink: 0; margin-left: 10px; }
+  .ex-reps { font-size: 12px; color: #aaa; margin-top: 4px; }
+
   .series-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .serie-btn {
     width: 44px; height: 44px; border-radius: 10px;
-    font-weight: bold; cursor: pointer; transition: all 0.2s;
-    font-size: 13px;
+    font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 13px;
   }
   .serie-btn.checked { font-size: 18px; background: #2a9d8f; color: white; border: 2px solid #2a9d8f; }
-
   .hidden { display: none; }
 </style>
 </head>
 <body>
-
 <header>
   <div class="label">Tracker de séance</div>
   <h1 id="page-title">Mes Programmes</h1>
   <div class="nav-btns" id="nav-btns" style="display:none">
-    <button class="btn btn-back" id="btn-back" onclick="goBack()">← Retour</button>
+    <button class="btn btn-back" onclick="goBack()">← Retour</button>
     <button class="btn btn-reset hidden" id="btn-reset" onclick="resetSeance()">Réinitialiser</button>
   </div>
 </header>
-
 <main>
-  <!-- PROGRAMMES -->
   <div id="view-programmes">
     <p class="subtitle">Choisis ton programme de la semaine</p>
     <div id="prog-list"></div>
   </div>
-
-  <!-- SEANCES -->
   <div id="view-seances" class="hidden">
     <p class="subtitle">Quelle séance aujourd'hui ?</p>
     <div id="seance-list"></div>
   </div>
-
-  <!-- EXERCICES -->
   <div id="view-exercices" class="hidden">
     <div class="progress-wrap">
       <div class="progress-labels">
@@ -129,261 +113,214 @@
     <div id="ex-list"></div>
   </div>
 </main>
-
 <script>
 const PROGRAMS = {
   "1 Séance": [
     { name: "Full Body", color: "#e63946", exercises: [
-      { name: "Bench Press", series: 3, reps: "10" },
-      { name: "Tirage vertical corde", series: 3, reps: "10" },
-      { name: "Chest/Shoulder Press assis", series: 3, reps: "10" },
-      { name: "Squat machine", series: 3, reps: "10" },
-      { name: "Dips épaules", series: 3, reps: "10" },
-      { name: "Dips biceps", series: 3, reps: "10" },
-      { name: "Dips abdos", series: 3, reps: "10" },
-      { name: "Abdos (pieds surélevés)", series: 3, reps: "10" },
-      { name: "Lever de bassin 1 pied", series: 3, reps: "10/côté" },
-      { name: "Gainage (classique + latéraux)", series: 3, reps: "30 sec" },
+      { name: "Bench Press", series: 3, reps: "3×10", repos: "2 min" },
+      { name: "Tirage vertical corde", series: 3, reps: "3×10", repos: "2 min" },
+      { name: "Chest/Shoulder Press assis", series: 3, reps: "3×10", repos: "1 min 30" },
+      { name: "Squat machine", series: 3, reps: "3×10", repos: "2 min" },
+      { name: "Dips épaules", series: 3, reps: "3×10", repos: "1 min" },
+      { name: "Dips biceps", series: 3, reps: "3×10", repos: "1 min" },
+      { name: "Dips abdos", series: 3, reps: "3×10", repos: "30 sec" },
+      { name: "Abdos (pieds surélevés)", series: 3, reps: "3×10", repos: "1 min" },
+      { name: "Lever de bassin 1 pied", series: 3, reps: "3×10/côté", repos: "1 min" },
+      { name: "Gainage classique + latéraux", series: 3, reps: "3×30 sec", repos: "30 sec" },
     ]},
   ],
   "2 Séances": [
     { name: "Séance A — Haut du corps", color: "#e63946", exercises: [
-      { name: "Bench Press", series: 4, reps: "10" },
-      { name: "Tirage vertical corde", series: 4, reps: "10" },
-      { name: "Chest/Shoulder Press assis", series: 3, reps: "10" },
-      { name: "Tractions", series: 3, reps: "5" },
-      { name: "Dips épaules", series: 3, reps: "10" },
-      { name: "Dips biceps", series: 3, reps: "10" },
-      { name: "Gainage (classique + latéraux)", series: 3, reps: "30 sec" },
+      { name: "Bench Press", series: 4, reps: "4×10", repos: "2 min" },
+      { name: "Tirage vertical corde", series: 4, reps: "4×10", repos: "2 min" },
+      { name: "Chest/Shoulder Press assis", series: 3, reps: "3×10", repos: "1 min 30" },
+      { name: "Tractions", series: 3, reps: "3×5", repos: "2 min" },
+      { name: "Dips épaules", series: 3, reps: "3×10", repos: "1 min" },
+      { name: "Dips biceps", series: 3, reps: "3×10", repos: "1 min" },
+      { name: "Gainage classique + latéraux", series: 3, reps: "3×30 sec", repos: "30 sec" },
     ]},
     { name: "Séance B — Bas du corps / Abdos / Cardio", color: "#457b9d", exercises: [
-      { name: "Squat machine", series: 4, reps: "10" },
-      { name: "Pompes", series: 4, reps: "15" },
-      { name: "Dips abdos", series: 5, reps: "10" },
-      { name: "Abdos (pieds surélevés)", series: 10, reps: "10" },
-      { name: "Lever de bassin 1 pied", series: 3, reps: "10/côté" },
-      { name: "Corde à sauter", series: 3, reps: "30 sec" },
+      { name: "Squat machine", series: 4, reps: "4×10", repos: "2 min" },
+      { name: "Pompes", series: 4, reps: "4×15", repos: "1 min" },
+      { name: "Dips abdos", series: 5, reps: "5×10", repos: "30 sec" },
+      { name: "Abdos (pieds surélevés)", series: 10, reps: "10×10", repos: "1 min" },
+      { name: "Lever de bassin 1 pied", series: 3, reps: "3×10/côté", repos: "1 min" },
+      { name: "Corde à sauter", series: 3, reps: "3×30 sec", repos: "30 sec" },
     ]},
   ],
   "3 Séances": [
     { name: "Séance A — Poitrine / Épaules", color: "#e63946", exercises: [
-      { name: "Bench Press", series: 4, reps: "10" },
-      { name: "Chest/Shoulder Press assis", series: 4, reps: "10" },
-      { name: "Pompes", series: 3, reps: "15" },
-      { name: "Dips épaules", series: 3, reps: "10" },
-      { name: "Gainage (classique + latéraux)", series: 3, reps: "30 sec" },
+      { name: "Bench Press", series: 4, reps: "4×10", repos: "2 min" },
+      { name: "Chest/Shoulder Press assis", series: 4, reps: "4×10", repos: "1 min 30" },
+      { name: "Pompes", series: 3, reps: "3×15", repos: "1 min" },
+      { name: "Dips épaules", series: 3, reps: "3×10", repos: "1 min" },
+      { name: "Gainage classique + latéraux", series: 3, reps: "3×30 sec", repos: "30 sec" },
     ]},
     { name: "Séance B — Dos / Bras", color: "#457b9d", exercises: [
-      { name: "Tractions", series: 4, reps: "5" },
-      { name: "Tirage vertical corde", series: 4, reps: "10" },
-      { name: "Dips biceps", series: 4, reps: "10" },
-      { name: "Lever de bassin 1 pied", series: 3, reps: "10/côté" },
+      { name: "Tractions", series: 4, reps: "4×5", repos: "2 min" },
+      { name: "Tirage vertical corde", series: 4, reps: "4×10", repos: "2 min" },
+      { name: "Dips biceps", series: 4, reps: "4×10", repos: "1 min" },
+      { name: "Lever de bassin 1 pied", series: 3, reps: "3×10/côté", repos: "1 min" },
     ]},
     { name: "Séance C — Jambes / Abdos / Cardio", color: "#2a9d8f", exercises: [
-      { name: "Squat machine", series: 4, reps: "10" },
-      { name: "Dips abdos", series: 5, reps: "10" },
-      { name: "Abdos (pieds surélevés)", series: 8, reps: "10" },
-      { name: "Lever de bassin 1 pied", series: 3, reps: "12/côté" },
-      { name: "Corde à sauter", series: 4, reps: "30 sec" },
-      { name: "Gainage (classique + latéraux)", series: 3, reps: "30 sec" },
+      { name: "Squat machine", series: 4, reps: "4×10", repos: "2 min" },
+      { name: "Dips abdos", series: 5, reps: "5×10", repos: "30 sec" },
+      { name: "Abdos (pieds surélevés)", series: 8, reps: "8×10", repos: "1 min" },
+      { name: "Lever de bassin 1 pied", series: 3, reps: "3×12/côté", repos: "1 min" },
+      { name: "Corde à sauter", series: 4, reps: "4×30 sec", repos: "30 sec" },
+      { name: "Gainage classique + latéraux", series: 3, reps: "3×30 sec", repos: "30 sec" },
     ]},
   ],
   "4 Séances": [
     { name: "Séance A — Poitrine / Épaules", color: "#e63946", exercises: [
-      { name: "Bench Press", series: 4, reps: "12" },
-      { name: "Chest/Shoulder Press assis", series: 4, reps: "10" },
-      { name: "Pompes", series: 4, reps: "15" },
-      { name: "Dips épaules", series: 3, reps: "10" },
-      { name: "Gainage (classique + latéraux)", series: 3, reps: "30 sec" },
+      { name: "Bench Press", series: 4, reps: "4×12", repos: "2 min" },
+      { name: "Chest/Shoulder Press assis", series: 4, reps: "4×10", repos: "1 min 30" },
+      { name: "Pompes", series: 4, reps: "4×15", repos: "1 min" },
+      { name: "Dips épaules", series: 3, reps: "3×10", repos: "1 min" },
+      { name: "Gainage classique + latéraux", series: 3, reps: "3×30 sec", repos: "30 sec" },
     ]},
     { name: "Séance B — Dos / Bras", color: "#457b9d", exercises: [
-      { name: "Tractions", series: 4, reps: "6" },
-      { name: "Tirage vertical corde", series: 4, reps: "12" },
-      { name: "Dips biceps", series: 4, reps: "12" },
-      { name: "Lever de bassin 1 pied", series: 3, reps: "10/côté" },
+      { name: "Tractions", series: 4, reps: "4×6", repos: "2 min" },
+      { name: "Tirage vertical corde", series: 4, reps: "4×12", repos: "2 min" },
+      { name: "Dips biceps", series: 4, reps: "4×12", repos: "1 min" },
+      { name: "Lever de bassin 1 pied", series: 3, reps: "3×10/côté", repos: "1 min" },
     ]},
     { name: "Séance C — Jambes", color: "#2a9d8f", exercises: [
-      { name: "Squat machine", series: 4, reps: "12" },
-      { name: "Pompes serré (triceps)", series: 3, reps: "12" },
-      { name: "Dips biceps", series: 3, reps: "10" },
+      { name: "Squat machine", series: 4, reps: "4×12", repos: "2 min" },
+      { name: "Pompes serré (triceps)", series: 3, reps: "3×12", repos: "1 min" },
+      { name: "Dips biceps", series: 3, reps: "3×10", repos: "1 min" },
     ]},
     { name: "Séance D — Abdos / Cardio", color: "#e9a800", exercises: [
-      { name: "Dips abdos", series: 5, reps: "10" },
-      { name: "Abdos (pieds surélevés)", series: 10, reps: "10" },
-      { name: "Lever de bassin 1 pied", series: 4, reps: "12/côté" },
-      { name: "Corde à sauter", series: 4, reps: "30 sec" },
-      { name: "Gainage (classique + latéraux)", series: 3, reps: "30 sec" },
+      { name: "Dips abdos", series: 5, reps: "5×10", repos: "30 sec" },
+      { name: "Abdos (pieds surélevés)", series: 10, reps: "10×10", repos: "1 min" },
+      { name: "Lever de bassin 1 pied", series: 4, reps: "4×12/côté", repos: "1 min" },
+      { name: "Corde à sauter", series: 4, reps: "4×30 sec", repos: "30 sec" },
+      { name: "Gainage classique + latéraux", series: 3, reps: "3×30 sec", repos: "30 sec" },
     ]},
   ],
 };
 
-// STATE
-let currentProg = null;
-let currentSeanceIdx = null;
-let state = {}; // { progName: { seanceIdx: [ [false,false,...], ... ] } }
-
-function loadState() {
-  try { state = JSON.parse(localStorage.getItem("tracker_state") || "{}"); } catch(e) { state = {}; }
-}
-function saveState() {
-  localStorage.setItem("tracker_state", JSON.stringify(state));
-}
-function getChecked(prog, si, ei) {
-  return state[prog]?.[si]?.[ei] || [];
-}
-function setChecked(prog, si, ei, arr) {
-  if (!state[prog]) state[prog] = {};
-  if (!state[prog][si]) state[prog][si] = {};
-  state[prog][si][ei] = arr;
-  saveState();
-}
-
-function show(id) {
-  ["view-programmes","view-seances","view-exercices"].forEach(v => {
-    document.getElementById(v).classList.add("hidden");
-  });
-  document.getElementById(id).classList.remove("hidden");
-}
+let currentProg = null, currentSeanceIdx = null, state = {};
+function loadState() { try { state = JSON.parse(localStorage.getItem("tracker_state")||"{}"); } catch(e) { state={}; } }
+function saveState() { localStorage.setItem("tracker_state", JSON.stringify(state)); }
+function getChecked(p,si,ei) { return state[p]?.[si]?.[ei]||[]; }
+function setChecked(p,si,ei,arr) { if(!state[p])state[p]={}; if(!state[p][si])state[p][si]={}; state[p][si][ei]=arr; saveState(); }
+function show(id) { ["view-programmes","view-seances","view-exercices"].forEach(v=>document.getElementById(v).classList.add("hidden")); document.getElementById(id).classList.remove("hidden"); }
 
 function renderProgrammes() {
-  currentProg = null; currentSeanceIdx = null;
-  document.getElementById("page-title").textContent = "Mes Programmes";
-  document.getElementById("nav-btns").style.display = "none";
+  currentProg=null; currentSeanceIdx=null;
+  document.getElementById("page-title").textContent="Mes Programmes";
+  document.getElementById("nav-btns").style.display="none";
   document.getElementById("btn-reset").classList.add("hidden");
   show("view-programmes");
-
-  const list = document.getElementById("prog-list");
-  list.innerHTML = "";
-  Object.keys(PROGRAMS).forEach(prog => {
-    const seances = PROGRAMS[prog];
-    const btn = document.createElement("button");
-    btn.className = "prog-card";
-    btn.innerHTML = `<span class="prog-arrow">▶</span>${prog} / semaine<span class="prog-count">${seances.length} séance${seances.length > 1 ? "s" : ""}</span>`;
-    btn.onclick = () => renderSeances(prog);
-    list.appendChild(btn);
+  const list=document.getElementById("prog-list"); list.innerHTML="";
+  Object.keys(PROGRAMS).forEach(prog=>{
+    const s=PROGRAMS[prog];
+    const btn=document.createElement("button"); btn.className="prog-card";
+    btn.innerHTML=`<span class="prog-arrow">▶</span>${prog} / semaine<span class="prog-count">${s.length} séance${s.length>1?"s":""}</span>`;
+    btn.onclick=()=>renderSeances(prog); list.appendChild(btn);
   });
 }
 
 function renderSeances(prog) {
-  currentProg = prog; currentSeanceIdx = null;
-  document.getElementById("page-title").textContent = prog;
-  document.getElementById("nav-btns").style.display = "flex";
+  currentProg=prog; currentSeanceIdx=null;
+  document.getElementById("page-title").textContent=prog;
+  document.getElementById("nav-btns").style.display="flex";
   document.getElementById("btn-reset").classList.add("hidden");
   show("view-seances");
-
-  const list = document.getElementById("seance-list");
-  list.innerHTML = "";
-  PROGRAMS[prog].forEach((s, si) => {
-    const exs = s.exercises;
-    const total = exs.reduce((a,e) => a + e.series, 0);
-    let done = 0;
-    exs.forEach((e, ei) => {
-      const checked = getChecked(prog, si, ei);
-      done += checked.filter(Boolean).length;
-    });
-    const pct = total === 0 ? 0 : Math.round(done/total*100);
-
-    const btn = document.createElement("button");
-    btn.className = "seance-card";
-    btn.style.borderColor = s.color;
-    btn.innerHTML = `
-      <div class="seance-header">
-        <span>${s.name}</span>
-        <span class="seance-pct" style="color:${pct===100?'#2a9d8f':s.color}">${pct===100?"✓":pct>0?pct+"%":""}</span>
-      </div>
-      <div class="mini-bar"><div class="mini-fill" style="width:${pct}%;background:${s.color}"></div></div>
-    `;
-    btn.onclick = () => renderExercices(prog, si);
-    list.appendChild(btn);
+  const list=document.getElementById("seance-list"); list.innerHTML="";
+  PROGRAMS[prog].forEach((s,si)=>{
+    const total=s.exercises.reduce((a,e)=>a+e.series,0);
+    let done=0; s.exercises.forEach((e,ei)=>{done+=getChecked(prog,si,ei).filter(Boolean).length;});
+    const pct=total===0?0:Math.round(done/total*100);
+    const btn=document.createElement("button"); btn.className="seance-card"; btn.style.borderColor=s.color;
+    btn.innerHTML=`<div class="seance-header"><span>${s.name}</span><span style="color:${pct===100?'#2a9d8f':s.color};font-size:12px">${pct===100?"✓":pct>0?pct+"%":""}</span></div><div class="mini-bar"><div class="mini-fill" style="width:${pct}%;background:${s.color}"></div></div>`;
+    btn.onclick=()=>renderExercices(prog,si); list.appendChild(btn);
   });
 }
 
 function renderExercices(prog, si) {
-  currentProg = prog; currentSeanceIdx = si;
-  const seance = PROGRAMS[prog][si];
-  document.getElementById("page-title").textContent = seance.name;
-  document.getElementById("nav-btns").style.display = "flex";
+  currentProg=prog; currentSeanceIdx=si;
+  const seance=PROGRAMS[prog][si];
+  document.getElementById("page-title").textContent=seance.name;
+  document.getElementById("nav-btns").style.display="flex";
   document.getElementById("btn-reset").classList.remove("hidden");
-  show("view-exercices");
+  show("view-exercices"); updateProgress();
+  const list=document.getElementById("ex-list"); list.innerHTML="";
 
-  updateProgress();
-  const list = document.getElementById("ex-list");
-  list.innerHTML = "";
+  // No table header needed
+  seance.exercises.forEach((ex,ei)=>{
+    const checked=getChecked(prog,si,ei);
+    while(checked.length<ex.series) checked.push(false);
+    const allDone=checked.slice(0,ex.series).every(Boolean);
 
-  seance.exercises.forEach((ex, ei) => {
-    const checked = getChecked(prog, si, ei);
-    while (checked.length < ex.series) checked.push(false);
+    const block=document.createElement("div"); block.className="ex-block";
+    const card=document.createElement("div"); card.className="ex-card"+(allDone?" done":"");
 
-    const allDone = checked.slice(0, ex.series).every(Boolean);
-    const card = document.createElement("div");
-    card.className = "ex-card" + (allDone ? " done" : "");
-    card.id = `ex-${ei}`;
+    // Repos label split into 2 lines like image
+    const reposParts=ex.repos.split(" ");
+    const reposHtml=reposParts.join("<br>");
 
-    const btns = Array.from({length: ex.series}, (_, sIdx) => {
-      const d = checked[sIdx];
-      return `<button class="serie-btn ${d?"checked":""}" 
-        style="border: 2px solid ${d?"#2a9d8f":seance.color}; color:${d?"white":seance.color}; background:${d?"#2a9d8f":"transparent"}"
-        onclick="toggleSerie(${ei},${sIdx})">${d?"✓":sIdx+1}</button>`;
-    }).join("");
+    card.innerHTML=`
+      <div class="ex-card-header">
+        <div>
+          <div class="ex-name ${allDone?"done":""}">${allDone?"✓ ":""}${ex.name}</div>
+          <div class="ex-reps">${ex.reps}</div>
+        </div>
+        <div class="ex-repos-badge">${reposHtml}<br><span style="font-size:12px;color:#e63946">repos</span></div>
+      </div>
+      <div class="series-btns"></div>`;
 
-    card.innerHTML = `
-      <div class="ex-name ${allDone?"done":""}">${allDone?"✓ ":""}${ex.name}</div>
-      <div class="ex-meta">${ex.series} séries × ${ex.reps} reps</div>
-      <div class="series-btns">${btns}</div>
-    `;
-    list.appendChild(card);
+    const btnsDiv=card.querySelector(".series-btns");
+    checked.slice(0,ex.series).forEach((d,sIdx)=>{
+      const b=document.createElement("button"); b.className="serie-btn"+(d?" checked":"");
+      b.style.border=`2px solid ${d?"#2a9d8f":seance.color}`;
+      b.style.color=d?"white":seance.color;
+      b.style.background=d?"#2a9d8f":"transparent";
+      b.textContent=d?"✓":sIdx+1;
+      b.onclick=()=>toggleSerie(ei,sIdx);
+      btnsDiv.appendChild(b);
+    });
+    block.appendChild(card);
+    list.appendChild(block);
   });
 }
 
-function toggleSerie(ei, sIdx) {
-  const seance = PROGRAMS[currentProg][currentSeanceIdx];
-  const ex = seance.exercises[ei];
-  const checked = getChecked(currentProg, currentSeanceIdx, ei);
-  while (checked.length < ex.series) checked.push(false);
-  checked[sIdx] = !checked[sIdx];
-  setChecked(currentProg, currentSeanceIdx, ei, checked);
-  renderExercices(currentProg, currentSeanceIdx);
+function toggleSerie(ei,sIdx) {
+  const ex=PROGRAMS[currentProg][currentSeanceIdx].exercises[ei];
+  const checked=getChecked(currentProg,currentSeanceIdx,ei);
+  while(checked.length<ex.series) checked.push(false);
+  checked[sIdx]=!checked[sIdx];
+  setChecked(currentProg,currentSeanceIdx,ei,checked);
+  renderExercices(currentProg,currentSeanceIdx);
 }
 
 function updateProgress() {
-  const seance = PROGRAMS[currentProg][currentSeanceIdx];
-  const total = seance.exercises.reduce((a,e) => a + e.series, 0);
-  let done = 0;
-  seance.exercises.forEach((e, ei) => {
-    const checked = getChecked(currentProg, currentSeanceIdx, ei);
-    done += checked.filter(Boolean).length;
-  });
-  const pct = total === 0 ? 0 : Math.round(done/total*100);
-  const fill = document.getElementById("progress-fill");
-  const lbl = document.getElementById("pct-label");
-  const msg = document.getElementById("done-msg");
-  fill.style.width = pct + "%";
-  fill.style.background = pct === 100 ? "#2a9d8f" : seance.color;
-  lbl.textContent = pct + "%";
-  lbl.style.color = pct === 100 ? "#2a9d8f" : seance.color;
-  if (pct === 100) msg.classList.remove("hidden");
-  else msg.classList.add("hidden");
+  const seance=PROGRAMS[currentProg][currentSeanceIdx];
+  const total=seance.exercises.reduce((a,e)=>a+e.series,0);
+  let done=0; seance.exercises.forEach((e,ei)=>{done+=getChecked(currentProg,currentSeanceIdx,ei).filter(Boolean).length;});
+  const pct=total===0?0:Math.round(done/total*100);
+  document.getElementById("progress-fill").style.width=pct+"%";
+  document.getElementById("progress-fill").style.background=pct===100?"#2a9d8f":seance.color;
+  document.getElementById("pct-label").textContent=pct+"%";
+  document.getElementById("pct-label").style.color=pct===100?"#2a9d8f":seance.color;
+  if(pct===100) document.getElementById("done-msg").classList.remove("hidden");
+  else document.getElementById("done-msg").classList.add("hidden");
 }
 
 function resetSeance() {
-  if (!currentProg || currentSeanceIdx === null) return;
-  const seance = PROGRAMS[currentProg][currentSeanceIdx];
-  seance.exercises.forEach((e, ei) => {
-    setChecked(currentProg, currentSeanceIdx, ei, Array(e.series).fill(false));
+  PROGRAMS[currentProg][currentSeanceIdx].exercises.forEach((e,ei)=>{
+    setChecked(currentProg,currentSeanceIdx,ei,Array(e.series).fill(false));
   });
-  renderExercices(currentProg, currentSeanceIdx);
+  renderExercices(currentProg,currentSeanceIdx);
 }
 
 function goBack() {
-  if (currentSeanceIdx !== null) {
-    renderSeances(currentProg);
-  } else {
-    renderProgrammes();
-  }
+  if(currentSeanceIdx!==null) renderSeances(currentProg);
+  else renderProgrammes();
 }
 
-loadState();
-renderProgrammes();
+loadState(); renderProgrammes();
 </script>
 </body>
 </html>
